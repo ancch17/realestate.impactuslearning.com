@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Andrew Chew Property | Singapore Property Listings</title>
+<meta name="description" content="Browse selected HDB flats, condominiums and shophouses across Singapore with Andrew Chew Property." />
+<style>
+  :root{
+    --navy:#0f2540; --navy-soft:#1c3a5e; --teal:#0e9c8f; --teal-dark:#0b7d73;
+    --gold:#c8942a; --ink:#22303f; --muted:#6b7a8d; --line:#e4e9f0;
+    --bg:#f6f8fb; --card:#ffffff; --radius:16px; --shadow:0 6px 22px rgba(15,37,64,.08);
+    --shadow-lg:0 14px 40px rgba(15,37,64,.16);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.55;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  h1,h2,h3{color:var(--navy);line-height:1.2;margin:0 0 .4em;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px;}
+  .logo{font-weight:800;font-size:1.15rem;color:var(--navy);letter-spacing:.2px;}
+  .logo span{color:var(--teal);}
+  .nav-links{display:flex;gap:26px;align-items:center;}
+  .nav-links a{color:var(--muted);font-weight:600;font-size:.95rem;}
+  .nav-links a:hover{color:var(--navy);}
+  .btn{cursor:pointer;border:none;border-radius:10px;font-weight:700;font-size:.95rem;
+    padding:11px 20px;transition:.15s;font-family:inherit;}
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--line);}
+  .btn-outline:hover{border-color:var(--teal);color:var(--teal);}
+  .btn-gold{background:var(--gold);color:#fff;}
+  .btn-gold:hover{filter:brightness(.94);}
+  .menu-toggle{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--navy);}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-soft) 55%,#20507e 100%);
+    color:#fff;padding:58px 0 130px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;inset:0;opacity:.10;
+    background-image:radial-gradient(circle at 20% 30%,#fff 1px,transparent 1px),
+    radial-gradient(circle at 70% 60%,#fff 1px,transparent 1px);background-size:40px 40px;}
+  .hero .wrap{position:relative;z-index:1;}
+  .hero h1{color:#fff;font-size:2.6rem;margin-bottom:.25em;}
+  .hero p{color:#d5e2f0;font-size:1.15rem;max-width:620px;margin:0;}
+
+  /* Search form */
+  .search-wrap{margin-top:-96px;position:relative;z-index:5;}
+  .search{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+    padding:22px 22px 20px;border:1px solid var(--line);}
+  .search h2{font-size:1.05rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .search h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--teal);}
+  .grid-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field.keyword{grid-column:1 / -1;}
+  .field label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .field input,.field select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:.95rem;font-family:inherit;background:#fff;color:var(--ink);transition:.15s;appearance:none;}
+  .field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7a8d' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer;}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,156,143,.15);}
+  #moreFilters{display:contents;}
+  .more-toggle{display:none;}
+  .search-actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center;}
+  .result-count{margin-left:auto;color:var(--muted);font-size:.9rem;font-weight:600;}
+
+  /* Listings */
+  section{padding:56px 0;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 34px;}
+  .section-head h2{font-size:1.9rem;}
+  .section-head p{color:var(--muted);margin:0;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+    border:1px solid var(--line);display:flex;flex-direction:column;transition:.18s;}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .card-img{position:relative;aspect-ratio:4/3;background:#dfe6ee;}
+  .card-img img{width:100%;height:100%;object-fit:cover;}
+  .badges{position:absolute;top:12px;left:12px;display:flex;gap:8px;}
+  .badge{font-size:.72rem;font-weight:700;padding:5px 11px;border-radius:999px;color:#fff;letter-spacing:.3px;}
+  .badge-type{background:rgba(15,37,64,.92);}
+  .badge-status{background:var(--teal);position:absolute;top:12px;right:12px;left:auto;}
+  .card-body{padding:18px 18px 20px;display:flex;flex-direction:column;flex:1;}
+  .card-title{font-size:1.15rem;margin-bottom:4px;}
+  .card-loc{color:var(--muted);font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+  .card-price{color:var(--navy);font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card-psf{color:var(--gold);font-size:.82rem;font-weight:700;margin-bottom:12px;}
+  .specs{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.86rem;color:var(--ink);
+    padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px;}
+  .specs b{color:var(--navy);}
+  .card-desc{font-size:.88rem;color:var(--muted);flex:1;margin-bottom:16px;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-actions{display:flex;gap:10px;}
+  .card-actions .btn{flex:1;padding:10px;}
+  .no-results{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted);
+    background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);font-weight:600;}
+
+  /* About / Contact */
+  .alt{background:#fff;}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+  .about-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
+    padding:34px;box-shadow:var(--shadow);}
+  .about-card p{color:var(--muted);margin:0;font-size:1.05rem;}
+  .contact-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:40px;align-items:start;}
+  .contact-info h2{font-size:1.9rem;}
+  .contact-info p{color:var(--muted);}
+  .contact-info .email{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--teal);
+    font-size:1.05rem;margin-top:6px;}
+
+  /* Forms */
+  .enquiry{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;box-shadow:var(--shadow);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .form-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+  .form-field.full{grid-column:1/-1;}
+  .form-field label{font-size:.82rem;font-weight:700;color:var(--ink);}
+  .form-field input,.form-field select,.form-field textarea{padding:11px 12px;border:1.5px solid var(--line);
+    border-radius:10px;font-size:.95rem;font-family:inherit;background:#fff;}
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--teal);
+    box-shadow:0 0 0 3px rgba(14,156,143,.15);}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;color:var(--muted);margin-bottom:16px;}
+  .consent input{margin-top:3px;}
+  .form-success{background:#e8f7f4;border:1px solid var(--teal);color:var(--teal-dark);
+    border-radius:12px;padding:16px;font-weight:600;text-align:center;display:none;}
+
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,37,64,.6);z-index:100;
+    display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:var(--radius);max-width:760px;width:100%;overflow:hidden;
+    box-shadow:var(--shadow-lg);animation:pop .2s ease;}
+  @keyframes pop{from{transform:translateY(14px);opacity:0;}to{transform:none;opacity:1;}}
+  .modal-img{position:relative;aspect-ratio:16/9;background:#dfe6ee;}
+  .modal-img img{width:100%;height:100%;object-fit:cover;}
+  .modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.95);border:none;
+    width:38px;height:38px;border-radius:50%;font-size:1.2rem;cursor:pointer;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .modal-content{padding:26px;}
+  .modal-content h2{font-size:1.55rem;margin-bottom:4px;}
+  .modal-loc{color:var(--muted);margin-bottom:14px;}
+  .modal-price{font-size:1.7rem;font-weight:800;color:var(--navy);}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);
+    border-radius:12px;overflow:hidden;margin:18px 0;}
+  .fact{padding:12px 15px;border-bottom:1px solid var(--line);font-size:.9rem;}
+  .fact:nth-child(odd){border-right:1px solid var(--line);}
+  .fact span{display:block;color:var(--muted);font-size:.76rem;text-transform:uppercase;
+    letter-spacing:.4px;font-weight:700;margin-bottom:2px;}
+  .fact b{color:var(--navy);font-weight:700;}
+  .modal-desc{color:var(--ink);margin-bottom:20px;}
+  .modal h3{font-size:1.15rem;margin:22px 0 12px;}
+
+  /* Footer */
+  footer{background:var(--navy);color:#c7d4e4;padding:44px 0 30px;text-align:center;}
+  footer .flogo{color:#fff;font-weight:800;font-size:1.2rem;margin-bottom:8px;}
+  footer .flogo span{color:var(--teal);}
+  footer a{color:var(--teal);}
+  footer .disclaimer{font-size:.82rem;max-width:620px;margin:18px auto 0;color:#7f92ab;line-height:1.6;}
+
+  /* Responsive */
+  @media(max-width:900px){
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .grid-fields{grid-template-columns:repeat(2,1fr);}
+    .about-grid,.contact-grid{grid-template-columns:1fr;}
+  }
+  @media(max-width:640px){
+    .nav-links{display:none;position:absolute;top:66px;left:0;right:0;background:#fff;flex-direction:column;
+      padding:14px 20px 20px;gap:14px;border-bottom:1px solid var(--line);box-shadow:var(--shadow);}
+    .nav-links.open{display:flex;}
+    .nav-links a{width:100%;}
+    .nav-links .btn{width:100%;text-align:center;}
+    .menu-toggle{display:block;}
+    .hero h1{font-size:1.95rem;}
+    .hero p{font-size:1rem;}
+    .cards{grid-template-columns:1fr;}
+    .grid-fields{grid-template-columns:1fr 1fr;}
+    .field.keyword{grid-column:1/-1;}
+    #moreFilters{display:none;}
+    #moreFilters.open{display:contents;}
+    .more-toggle{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);
+      color:var(--navy);border-radius:10px;padding:11px;font-weight:700;cursor:pointer;grid-column:1/-1;
+      justify-content:center;font-family:inherit;}
+    .form-row{grid-template-columns:1fr;}
+    .facts{grid-template-columns:1fr;}
+    .fact:nth-child(odd){border-right:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo">Andrew Chew <span>Property</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#listings">Listings</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-primary">Enquire Now</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<div class="hero" id="top">
+  <div class="wrap">
+    <h1>Find Your Next Singapore Property</h1>
+    <p>Browse selected HDB flats, condominiums and shophouses across Singapore.</p>
+  </div>
+</div>
+
+<!-- ===== SEARCH FORM ===== -->
+<div class="wrap search-wrap">
+  <form class="search" id="searchForm" onsubmit="return false;">
+    <h2><span class="dot"></span> Search Properties</h2>
+    <div class="grid-fields">
+      <div class="field keyword">
+        <label for="f-keyword">Keyword</label>
+        <input type="text" id="f-keyword" placeholder="Search by project, town, address or district" />
+      </div>
+      <div class="field">
+        <label for="f-type">Property type</label>
+        <select id="f-type">
+          <option value="">All property types</option>
+          <option>HDB</option><option>Condo</option><option>Shophouse</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-location">Location</label>
+        <select id="f-location">
+          <option value="">All locations</option>
+          <option>Bedok North</option><option>Tampines Central</option><option>Punggol Field</option>
+          <option>District 19 - Hougang / Punggol</option><option>District 10 - Tanglin / Holland</option>
+          <option>Joo Chiat / Katong</option><option>Tanjong Pagar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-price">Price range</label>
+        <select id="f-price">
+          <option value="">Any price</option>
+          <option value="0-500000">Below S$500,000</option>
+          <option value="500000-800000">S$500,000 to S$800,000</option>
+          <option value="800000-1500000">S$800,000 to S$1.5M</option>
+          <option value="1500000-3000000">S$1.5M to S$3M</option>
+          <option value="3000000-6000000">S$3M to S$6M</option>
+          <option value="6000000-999999999">Above S$6M</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-beds">Bedrooms</label>
+        <select id="f-beds">
+          <option value="">Any bedrooms</option>
+          <option value="1">1 bedroom</option><option value="2">2 bedrooms</option>
+          <option value="3">3 bedrooms</option><option value="4+">4+ bedrooms</option>
+          <option value="na">Not applicable</option>
+        </select>
+      </div>
+
+      <!-- More filters (collapsible on mobile) -->
+      <button type="button" class="more-toggle" id="moreToggle">+ More Filters</button>
+      <div id="moreFilters">
+        <div class="field">
+          <label for="f-hdb">HDB room type</label>
+          <select id="f-hdb">
+            <option value="">Any HDB room type</option>
+            <option>3-room</option><option>4-room</option><option>5-room</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-baths">Bathrooms</label>
+          <select id="f-baths">
+            <option value="">Any bathrooms</option>
+            <option value="1">1 bathroom</option><option value="2">2 bathrooms</option>
+            <option value="3">3 bathrooms</option><option value="4+">4+ bathrooms</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-area">Floor area range</label>
+          <select id="f-area">
+            <option value="">Any floor area</option>
+            <option value="0-700">Below 700 sqft / 70 sqm</option>
+            <option value="700-1000">700 to 1,000 sqft / 70 to 93 sqm</option>
+            <option value="1000-1500">1,000 to 1,500 sqft / 93 to 140 sqm</option>
+            <option value="1500-3500">1,500 to 3,500 sqft</option>
+            <option value="3500-9999999">Above 3,500 sqft</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-tenure">Tenure</label>
+          <select id="f-tenure">
+            <option value="">Any tenure</option>
+            <option>HDB leasehold</option><option>99-year</option><option>Freehold</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-level">Level / floor</label>
+          <select id="f-level">
+            <option value="">Any level</option>
+            <option>Mid floor</option><option>High floor</option>
+            <option>2 storeys + attic</option><option>3 storeys</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-status">Property status</label>
+          <select id="f-status">
+            <option value="">Any status</option>
+            <option>Available</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-buyer">Buyer profile</label>
+          <select id="f-buyer">
+            <option value="">Any buyer profile</option>
+            <option>First-time buyer</option><option>Family home</option><option>Investor</option>
+            <option>Owner-occupier</option><option>Commercial buyer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-use">Property use</label>
+          <select id="f-use">
+            <option value="">Any use</option>
+            <option>Residential</option><option>Investment</option><option>Commercial</option>
+            <option>Mixed use</option><option>Boutique office</option><option>Retail</option><option>Hospitality</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-sort">Sort by</label>
+          <select id="f-sort">
+            <option value="recommended">Recommended</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="area-asc">Floor area: small to large</option>
+            <option value="area-desc">Floor area: large to small</option>
+            <option value="beds-asc">Bedrooms: low to high</option>
+            <option value="beds-desc">Bedrooms: high to low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="search-actions">
+      <button type="button" class="btn btn-primary" id="searchBtn">Search Properties</button>
+      <button type="button" class="btn btn-outline" id="resetBtn">Reset Filters</button>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+  </form>
+</div>
+
+<!-- ===== LISTINGS ===== -->
+<section id="listings">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Available Properties</h2>
+      <p>Explore our curated selection of Singapore homes and commercial spaces.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="alt" id="about">
+  <div class="wrap about-grid">
+    <div>
+      <h2>About Andrew Chew Property</h2>
+      <p style="color:var(--muted);font-size:1.05rem;">Helping buyers, families and investors explore selected
+        Singapore property opportunities across HDB flats, condominiums and shophouses.</p>
+    </div>
+    <div class="about-card">
+      <p>&ldquo;Whether you are a first-time buyer, growing your family, or expanding an investment portfolio,
+        I focus on clear advice and a smooth, trustworthy experience from first viewing to keys in hand.&rdquo;</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-info">
+      <h2>Speak to Andrew</h2>
+      <p>Interested in any of these properties? Send an enquiry and I&rsquo;ll get back to you.</p>
+      <a class="email" href="mailto:andrewchewch@gmail.com">&#9993; andrewchewch@gmail.com</a>
+    </div>
+    <div class="enquiry">
+      <div class="form-success" id="contactSuccess">Thank you. Your enquiry has been received. Andrew will contact you shortly.</div>
+      <!--
+        Netlify Forms: submissions are captured automatically on deploy.
+        After deployment, enable form submission email notifications in the Netlify
+        dashboard and send notifications to andrewchewch@gmail.com.
+      -->
+      <form name="property-enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field"
+            class="enquiry-form" id="contactForm">
+        <input type="hidden" name="form-name" value="property-enquiry" />
+        <p style="display:none;"><label>Do not fill this out: <input name="bot-field" /></label></p>
+        <div class="form-row">
+          <div class="form-field"><label for="c-name">Full name</label>
+            <input id="c-name" type="text" name="full_name" required /></div>
+          <div class="form-field"><label for="c-email">Email address</label>
+            <input id="c-email" type="email" name="email" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label for="c-phone">Phone number</label>
+            <input id="c-phone" type="tel" name="phone" /></div>
+          <div class="form-field"><label for="c-budget">Budget range</label>
+            <select id="c-budget" name="budget_range">
+              <option value="">Select a budget</option>
+              <option>Below S$500,000</option><option>S$500,000 to S$800,000</option>
+              <option>S$800,000 to S$1.5M</option><option>S$1.5M to S$3M</option>
+              <option>S$3M to S$6M</option><option>Above S$6M</option>
+            </select></div>
+        </div>
+        <div class="form-field full"><label for="c-property">Property interested in</label>
+          <select id="c-property" name="property_interested_in">
+            <option value="">Any / General enquiry</option>
+          </select></div>
+        <div class="form-field full"><label for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="4"></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" required />
+          I agree to be contacted about my property enquiry.</label>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Send Enquiry</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="flogo">Andrew Chew <span>Property</span></div>
+    <div>Email: <a href="mailto:andrewchewch@gmail.com">andrewchewch@gmail.com</a></div>
+    <p class="disclaimer">All property details shown are sample data for demonstration purposes
+      and are not actual property listings.</p>
+  </div>
+</footer>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-img">
+      <img id="m-img" src="" alt="" />
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-content" id="m-content"></div>
+  </div>
+</div>
+
+<script>
+/* ===== Embedded fallback data (site also fetches listings.json) ===== */
+var FALLBACK = [
+  {
+    "id": "hdb3",
+    "property_type": "HDB",
+    "title": "Bright 3-Room Flat near MRT",
+    "location": "Bedok North",
+    "address": "Blk 418 Bedok North Avenue 2",
+    "price_sgd": 418000,
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "floor_area": 68,
+    "floor_area_unit": "sqm",
+    "level": "Mid floor",
+    "hdb_room_type": "3-room",
+    "tenure": "HDB leasehold",
+    "lease_info": "Approx. 58 years remaining",
+    "status": "Available",
+    "image": "/images/hdb3-1.jpg",
+    "buyer_profile": "First-time buyer",
+    "property_use": "Residential",
+    "description": "Well-kept 3-room flat with efficient layout, bright living space and convenient access to neighbourhood amenities. Suitable for a small family, first-time buyer or right-sizing couple."
+  },
+  {
+    "id": "hdb4",
+    "property_type": "HDB",
+    "title": "Spacious 4-Room Corner Unit",
+    "location": "Tampines Central",
+    "address": "Blk 852 Tampines Street 82",
+    "price_sgd": 638000,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "floor_area": 93,
+    "floor_area_unit": "sqm",
+    "level": "High floor",
+    "hdb_room_type": "4-room",
+    "tenure": "HDB leasehold",
+    "lease_info": "Approx. 72 years remaining",
+    "status": "Available",
+    "image": "/images/hdb4-1.jpg",
+    "buyer_profile": "Family home",
+    "property_use": "Residential",
+    "description": "Corner unit with good natural light, practical bedrooms and a family-friendly estate. Close to shops, parks, schools and public transport connections."
+  },
+  {
+    "id": "hdb5",
+    "property_type": "HDB",
+    "title": "Renovated 5-Room Family Home",
+    "location": "Punggol Field",
+    "address": "Blk 196B Punggol Field",
+    "price_sgd": 792000,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "floor_area": 113,
+    "floor_area_unit": "sqm",
+    "level": "High floor",
+    "hdb_room_type": "5-room",
+    "tenure": "HDB leasehold",
+    "lease_info": "Approx. 86 years remaining",
+    "status": "Available",
+    "image": "/images/hdb5-1.jpg",
+    "buyer_profile": "Family home",
+    "property_use": "Residential",
+    "description": "Large living and dining area with flexible study corner. Ideal for a growing household that wants space, storage and access to waterfront lifestyle options."
+  },
+  {
+    "id": "condo-rivergate",
+    "property_type": "Condo",
+    "title": "RiverGate Residences - 2 Bedder",
+    "location": "District 19 - Hougang / Punggol",
+    "address": "Fernvale Link",
+    "price_sgd": 1288000,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "floor_area": 764,
+    "floor_area_unit": "sqft",
+    "level": "Mid floor",
+    "tenure": "99-year",
+    "psf": 1686,
+    "lease_info": "99-year leasehold; TOP 2018",
+    "status": "Available",
+    "image": "/images/condo-rivergate-1.jpg",
+    "buyer_profile": "Investor",
+    "property_use": "Investment",
+    "description": "Modern condominium unit with efficient two-bedroom layout, balcony and access to pool, gym and landscaped facilities. Strong fit for young professionals or investors."
+  },
+  {
+    "id": "condo-orchardcrest",
+    "property_type": "Condo",
+    "title": "Orchard Crest Suites - Freehold 3 Bedder",
+    "location": "District 10 - Tanglin / Holland",
+    "address": "Near River Valley Road",
+    "price_sgd": 3180000,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "floor_area": 1249,
+    "floor_area_unit": "sqft",
+    "level": "High floor",
+    "tenure": "Freehold",
+    "psf": 2546,
+    "lease_info": "Freehold; completed 2016",
+    "status": "Available",
+    "image": "/images/condo-orchardcrest-1.jpg",
+    "buyer_profile": "Owner-occupier",
+    "property_use": "Residential",
+    "description": "Premium freehold apartment with generous living space, balcony and access to established lifestyle amenities. Positioned for buyers seeking long-term city-fringe ownership."
+  },
+  {
+    "id": "shophouse-joochiat",
+    "property_type": "Shophouse",
+    "title": "Joo Chiat Conservation Shophouse",
+    "location": "Joo Chiat / Katong",
+    "address": "Joo Chiat Road",
+    "price_sgd": 5800000,
+    "bedrooms": null,
+    "bathrooms": 3,
+    "land_area_sqft": 1650,
+    "gfa_sqft": 3300,
+    "floor_area": 3300,
+    "floor_area_unit": "sqft",
+    "level": "2 storeys + attic",
+    "tenure": "Freehold",
+    "conservation_status": "Conservation area",
+    "zoning_use": "Commercial / residential mixed use",
+    "status": "Available",
+    "image": "/images/shophouse-joochiat-1.jpg",
+    "buyer_profile": "Commercial buyer",
+    "property_use": "Mixed use",
+    "description": "Character-rich conservation shophouse with strong street presence and flexible mixed-use potential. Suitable for boutique office, lifestyle retail or owner-occupier concept."
+  },
+  {
+    "id": "shophouse-tanjongpagar",
+    "property_type": "Shophouse",
+    "title": "CBD Fringe Heritage Shophouse",
+    "location": "Tanjong Pagar",
+    "address": "Near Duxton Road",
+    "price_sgd": 9200000,
+    "bedrooms": null,
+    "bathrooms": 4,
+    "land_area_sqft": 1880,
+    "gfa_sqft": 4250,
+    "floor_area": 4250,
+    "floor_area_unit": "sqft",
+    "level": "3 storeys",
+    "tenure": "99-year",
+    "conservation_status": "Conservation area",
+    "zoning_use": "Commercial",
+    "lease_info": "99-year leasehold; approx. 68 years remaining",
+    "status": "Available",
+    "image": "/images/shophouse-tanjongpagar-1.jpg",
+    "buyer_profile": "Commercial buyer",
+    "property_use": "Commercial",
+    "description": "Prominent CBD-fringe shophouse suited for flagship retail, hospitality, studio or corporate office use, subject to approvals. Strong walkability and business visibility."
+  }
+];
+var listings = [];
+
+var SQFT_PER_SQM = 10.7639;
+function toSqft(l){ return l.floor_area_unit === 'sqm' ? Math.round(l.floor_area * SQFT_PER_SQM) : l.floor_area; }
+function fmtPrice(n){ return 'S$' + n.toLocaleString('en-SG'); }
+
+/* ===== Load data ===== */
+fetch('listings.json')
+  .then(function(r){ if(!r.ok) throw new Error('no file'); return r.json(); })
+  .then(function(data){ listings = data; init(); })
+  .catch(function(){
+    // Fallback for opening index.html directly via file:// (no server)
+    if (FALLBACK) { listings = FALLBACK; init(); }
+    else { document.getElementById('cards').innerHTML =
+      '<div class="no-results">Could not load listings.json. Run via a web server or deploy to Netlify.</div>'; }
+  });
+
+function init(){
+  populatePropertySelect();
+  render();
+  wireEvents();
+}
+
+/* ===== Filtering ===== */
+function getFilters(){
+  return {
+    keyword: val('f-keyword').toLowerCase().trim(),
+    type: val('f-type'), location: val('f-location'), price: val('f-price'),
+    beds: val('f-beds'), hdb: val('f-hdb'), baths: val('f-baths'), area: val('f-area'),
+    tenure: val('f-tenure'), level: val('f-level'), status: val('f-status'),
+    buyer: val('f-buyer'), use: val('f-use'), sort: val('f-sort')
+  };
+}
+function val(id){ var e=document.getElementById(id); return e ? e.value : ''; }
+
+function matches(l, f){
+  if(f.keyword){
+    var hay = [l.title,l.location,l.address,l.property_type,l.tenure,l.description].join(' ').toLowerCase();
+    if(hay.indexOf(f.keyword) === -1) return false;
+  }
+  if(f.type && l.property_type !== f.type) return false;
+  if(f.location && l.location !== f.location) return false;
+  if(f.hdb && l.hdb_room_type !== f.hdb) return false;
+  if(f.tenure && l.tenure !== f.tenure) return false;
+  if(f.level && l.level !== f.level) return false;
+  if(f.status && l.status !== f.status) return false;
+  if(f.buyer && l.buyer_profile !== f.buyer) return false;
+  if(f.use && l.property_use !== f.use) return false;
+
+  if(f.price){
+    var p = f.price.split('-'); if(l.price_sgd < +p[0] || l.price_sgd > +p[1]) return false;
+  }
+  if(f.beds){
+    if(f.beds === 'na'){ if(l.bedrooms != null) return false; }
+    else if(f.beds === '4+'){ if(!(l.bedrooms >= 4)) return false; }
+    else { if(l.bedrooms !== +f.beds) return false; }
+  }
+  if(f.baths){
+    if(f.baths === '4+'){ if(!(l.bathrooms >= 4)) return false; }
+    else { if(l.bathrooms !== +f.baths) return false; }
+  }
+  if(f.area){
+    var a = f.area.split('-'); var sq = toSqft(l);
+    if(sq < +a[0] || sq > +a[1]) return false;
+  }
+  return true;
+}
+
+function sortList(arr, sort){
+  var s = arr.slice();
+  var beds = function(x){ return x.bedrooms == null ? -1 : x.bedrooms; };
+  if(sort === 'price-asc') s.sort(function(a,b){return a.price_sgd-b.price_sgd;});
+  else if(sort === 'price-desc') s.sort(function(a,b){return b.price_sgd-a.price_sgd;});
+  else if(sort === 'area-asc') s.sort(function(a,b){return toSqft(a)-toSqft(b);});
+  else if(sort === 'area-desc') s.sort(function(a,b){return toSqft(b)-toSqft(a);});
+  else if(sort === 'beds-asc') s.sort(function(a,b){return beds(a)-beds(b);});
+  else if(sort === 'beds-desc') s.sort(function(a,b){return beds(b)-beds(a);});
+  return s;
+}
+
+/* ===== Render cards ===== */
+function render(){
+  var f = getFilters();
+  var out = sortList(listings.filter(function(l){ return matches(l,f); }), f.sort);
+  var box = document.getElementById('cards');
+  document.getElementById('resultCount').textContent =
+    out.length + (out.length === 1 ? ' property' : ' properties') + ' found';
+
+  if(!out.length){
+    box.innerHTML = '<div class="no-results">No properties match your selected filters. Please adjust your search.</div>';
+    return;
+  }
+  box.innerHTML = out.map(cardHTML).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-view]'), function(btn){
+    btn.addEventListener('click', function(){ openModal(this.getAttribute('data-view')); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-enq]'), function(btn){
+    btn.addEventListener('click', function(){ openModal(this.getAttribute('data-enq'), true); });
+  });
+}
+
+function areaText(l){ return l.floor_area.toLocaleString('en-SG') + ' ' + l.floor_area_unit; }
+
+function cardHTML(l){
+  var beds = l.bedrooms == null ? '' : '<span><b>'+l.bedrooms+'</b> bed</span>';
+  var baths = '<span><b>'+l.bathrooms+'</b> bath</span>';
+  var area = '<span><b>'+areaText(l)+'</b></span>';
+  var shop = (l.property_type==='Shophouse' && l.land_area_sqft)
+    ? '<span>Land <b>'+l.land_area_sqft.toLocaleString('en-SG')+'</b> sqft</span><span>GFA <b>'+l.gfa_sqft.toLocaleString('en-SG')+'</b> sqft</span>' : '';
+  var psf = l.psf ? '<div class="card-psf">S$'+l.psf.toLocaleString('en-SG')+' psf</div>' : '<div class="card-psf">&nbsp;</div>';
+  return '<article class="card">'+
+    '<div class="card-img"><img src="'+l.image+'" alt="'+l.title+'" loading="lazy" />'+
+      '<div class="badges"><span class="badge badge-type">'+l.property_type+'</span></div>'+
+      '<span class="badge badge-status">'+l.status+'</span></div>'+
+    '<div class="card-body">'+
+      '<h3 class="card-title">'+l.title+'</h3>'+
+      '<div class="card-loc">&#128205; '+l.location+'</div>'+
+      '<div class="card-price">'+fmtPrice(l.price_sgd)+'</div>'+psf+
+      '<div class="specs">'+beds+baths+area+shop+'<span>'+l.tenure+'</span></div>'+
+      '<p class="card-desc">'+l.description+'</p>'+
+      '<div class="card-actions">'+
+        '<button class="btn btn-outline" data-view="'+l.id+'">View Details</button>'+
+        '<button class="btn btn-gold" data-enq="'+l.id+'">Enquire</button>'+
+      '</div>'+
+    '</div></article>';
+}
+
+/* ===== Modal ===== */
+function fact(label,value){ return value==null||value===''?'':'<div class="fact"><span>'+label+'</span><b>'+value+'</b></div>'; }
+
+function openModal(id, focusForm){
+  var l = listings.filter(function(x){return x.id===id;})[0]; if(!l) return;
+  document.getElementById('m-img').src = l.image;
+  document.getElementById('m-img').alt = l.title;
+  var beds = l.bedrooms==null ? 'N/A' : l.bedrooms;
+  var facts = fact('Property type', l.property_type)+fact('Location', l.location)+
+    fact('Address', l.address)+fact('Bedrooms', beds)+fact('Bathrooms', l.bathrooms)+
+    fact('Floor area', areaText(l))+
+    (l.land_area_sqft?fact('Land area', l.land_area_sqft.toLocaleString('en-SG')+' sqft'):'')+
+    (l.gfa_sqft?fact('GFA', l.gfa_sqft.toLocaleString('en-SG')+' sqft'):'')+
+    fact('Tenure', l.tenure)+fact('Lease info', l.lease_info)+fact('Level / floor', l.level)+
+    (l.psf?fact('Price psf', 'S$'+l.psf.toLocaleString('en-SG')):'')+
+    fact('Conservation', l.conservation_status)+fact('Zoning / use', l.zoning_use)+
+    fact('Buyer profile', l.buyer_profile)+fact('Status', l.status);
+
+  document.getElementById('m-content').innerHTML =
+    '<span class="badge badge-type" style="position:static;display:inline-block;margin-bottom:10px;">'+l.property_type+'</span>'+
+    '<h2>'+l.title+'</h2>'+
+    '<div class="modal-loc">&#128205; '+l.location+' &middot; '+l.address+'</div>'+
+    '<div class="modal-price">'+fmtPrice(l.price_sgd)+'</div>'+
+    '<div class="facts">'+facts+'</div>'+
+    '<h3>Description</h3><p class="modal-desc">'+l.description+'</p>'+
+    '<h3>Enquire about this property</h3>'+
+    '<div class="form-success" id="modalSuccess">Thank you. Your enquiry has been received. Andrew will contact you shortly.</div>'+
+    modalFormHTML(l);
+
+  wireModalForm();
+  var m = document.getElementById('modal'); m.classList.add('open');
+  document.body.style.overflow='hidden';
+  if(focusForm){ setTimeout(function(){ var el=document.getElementById('mf-name'); if(el) el.focus(); }, 60); }
+}
+
+function modalFormHTML(l){
+  return '<form name="property-enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="modalForm">'+
+    '<input type="hidden" name="form-name" value="property-enquiry" />'+
+    '<input type="hidden" name="property_interested_in" value="'+l.title+'" />'+
+    '<p style="display:none;"><label>Do not fill: <input name="bot-field" /></label></p>'+
+    '<div class="form-row">'+
+      '<div class="form-field"><label for="mf-name">Full name</label><input id="mf-name" type="text" name="full_name" required /></div>'+
+      '<div class="form-field"><label for="mf-email">Email address</label><input id="mf-email" type="email" name="email" required /></div>'+
+    '</div>'+
+    '<div class="form-row">'+
+      '<div class="form-field"><label for="mf-phone">Phone number</label><input id="mf-phone" type="tel" name="phone" /></div>'+
+      '<div class="form-field"><label for="mf-budget">Budget range</label><select id="mf-budget" name="budget_range">'+
+        '<option value="">Select a budget</option><option>Below S$500,000</option><option>S$500,000 to S$800,000</option>'+
+        '<option>S$800,000 to S$1.5M</option><option>S$1.5M to S$3M</option><option>S$3M to S$6M</option><option>Above S$6M</option>'+
+      '</select></div>'+
+    '</div>'+
+    '<div class="form-field full"><label for="mf-message">Message</label><textarea id="mf-message" name="message" rows="3">I am interested in '+l.title+'. Please share more details.</textarea></div>'+
+    '<label class="consent"><input type="checkbox" name="consent" required /> I agree to be contacted about my property enquiry.</label>'+
+    '<button type="submit" class="btn btn-primary" style="width:100%;">Send Enquiry</button>'+
+  '</form>';
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+
+/* ===== Netlify form submission (AJAX) ===== */
+function encode(data){
+  return Object.keys(data).map(function(k){
+    return encodeURIComponent(k)+'='+encodeURIComponent(data[k]); }).join('&');
+}
+function handleSubmit(form, successEl){
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = {};
+    Array.prototype.forEach.call(form.elements, function(el){
+      if(el.name){ data[el.name] = el.type==='checkbox' ? (el.checked?'yes':'no') : el.value; }
+    });
+    fetch('/', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:encode(data)})
+      .then(function(){ form.style.display='none'; successEl.style.display='block'; })
+      .catch(function(){ form.style.display='none'; successEl.style.display='block'; });
+  });
+}
+function wireModalForm(){
+  var f=document.getElementById('modalForm'); if(f) handleSubmit(f, document.getElementById('modalSuccess'));
+}
+
+/* ===== Populate contact "property interested in" ===== */
+function populatePropertySelect(){
+  var sel=document.getElementById('c-property');
+  listings.forEach(function(l){
+    var o=document.createElement('option'); o.value=l.title; o.textContent=l.title; sel.appendChild(o);
+  });
+}
+
+/* ===== Wire events ===== */
+function wireEvents(){
+  ['f-keyword','f-type','f-location','f-price','f-beds','f-hdb','f-baths','f-area',
+   'f-tenure','f-level','f-status','f-buyer','f-use','f-sort'].forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    el.addEventListener(el.tagName==='SELECT'?'change':'input', render);
+  });
+  document.getElementById('searchBtn').addEventListener('click', function(){
+    render(); document.getElementById('listings').scrollIntoView({behavior:'smooth'});
+  });
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    document.getElementById('searchForm').querySelectorAll('input,select').forEach(function(el){
+      if(el.tagName==='SELECT') el.selectedIndex=0; else el.value='';
+    });
+    document.getElementById('f-sort').value='recommended';
+    render();
+  });
+  document.getElementById('moreToggle').addEventListener('click', function(){
+    var mf=document.getElementById('moreFilters'); mf.classList.toggle('open');
+    this.textContent = mf.classList.contains('open') ? '- Fewer Filters' : '+ More Filters';
+  });
+  document.getElementById('menuToggle').addEventListener('click', function(){
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('#navLinks a').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('navLinks').classList.remove('open'); });
+  });
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  handleSubmit(document.getElementById('contactForm'), document.getElementById('contactSuccess'));
+}
+</script>
+</body>
+</html>

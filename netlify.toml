@@ -1,0 +1,8 @@
+# Netlify configuration for Andrew Chew Property
+# Static site: publish the repository root as-is.
+[build]
+  publish = "."
+
+# Note: Netlify Forms are detected automatically from the static HTML in index.html
+# (form name: property-enquiry). After deployment, enable form notifications in
+# Site settings > Forms > Form notifications and send them to andrewchewch@gmail.com.
