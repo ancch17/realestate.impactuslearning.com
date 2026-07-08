@@ -387,9 +387,11 @@
     <div class="enquiry">
       <div class="form-success" id="contactSuccess">Thank you. Your enquiry has been received. Andrew will contact you shortly.</div>
       <!--
-        Netlify Forms: submissions are captured automatically on deploy.
-        After deployment, enable form submission email notifications in the Netlify
-        dashboard and send notifications to andrewchewch@gmail.com.
+        Enquiry delivery: FormSubmit.co emails submissions to andrewchewch@gmail.com
+        (no backend needed, works on GitHub Pages).
+        IMPORTANT: the FIRST time this form is submitted, FormSubmit sends a one-time
+        confirmation email to andrewchewch@gmail.com. Click the activation link once
+        to start receiving enquiries.
       -->
       <form name="property-enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field"
             class="enquiry-form" id="contactForm">
@@ -801,9 +803,26 @@ function handleSubmit(form, successEl){
     Array.prototype.forEach.call(form.elements, function(el){
       if(el.name){ data[el.name] = el.type==='checkbox' ? (el.checked?'yes':'no') : el.value; }
     });
-    fetch('/', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:encode(data)})
+    // Honeypot: if the hidden bot field is filled, silently accept without sending.
+    if(data['bot-field']){ form.style.display='none'; successEl.style.display='block'; return; }
+    delete data['form-name']; delete data['bot-field'];
+    data['_subject'] = 'New property enquiry — Andrew Chew Property';
+    data['_captcha'] = 'false';
+    data['_template'] = 'table';
+    var btn = form.querySelector('button[type=submit]');
+    if(btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
+    // FormSubmit.co delivers submissions by email (no backend needed on GitHub Pages).
+    fetch('https://formsubmit.co/ajax/andrewchewch@gmail.com', {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
+      body:encode(data)
+    })
+      .then(function(r){ return r.json(); })
       .then(function(){ form.style.display='none'; successEl.style.display='block'; })
-      .catch(function(){ form.style.display='none'; successEl.style.display='block'; });
+      .catch(function(){
+        if(btn){ btn.disabled = false; btn.textContent = 'Send Enquiry'; }
+        alert('Sorry, something went wrong. Please email andrewchewch@gmail.com directly.');
+      });
   });
 }
 function wireModalForm(){
